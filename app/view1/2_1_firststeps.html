@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular-animate.js"></script>
+    <script src="myLib.js"></script>
+</head>
+<body>
+
+    <div ng-app="myApp" ng-controller="myController" ng-click="">
+       <input type="text" ng-model="inputValue"/>
+           <p ng-repeat="name in (names | filter:inputValue)">
+             <span>{{name}}</span>
+           </p>
+
+
+
+        <p ng-repeat="x in myArray">
+            <span>{{x}}</span>
+        </p>
+
+        {{myString | uppercase}} <br>
+        {{myString | lowercase}}<br>
+        {{myString | myFilter}}
+
+      <b>
+        <p>
+            ###################################
+            {{myVar | myFilter: 2:4}}
+        </p>
+      </b>
+
+        <p>
+            {{currentUrl}}
+        </p>
+
+        <p>
+            {{downloadUrl}}
+        </p>
+
+        <p>
+            <wiki page="AngularJS"/>
+        </p>
+
+        <p>
+            <input type="time" ng-model="timeInput">
+        </p>
+
+        <style>
+            input.ng-empty {
+                border-color: red;
+            }
+            input.ng-invalid{
+                border-color: red;
+            }
+
+            #myDiv{
+                transition: linear 1s;
+                background-color: lightblue;
+                height: 100px;
+            }
+            #myDiv.ng-hide{
+                height: 0px;
+                background-color: transparent;
+                color: transparent;
+            }
+
+        </style>
+
+        <p>
+            <input type="checkbox" ng-model="check">
+        </p>
+
+        <div id="myDiv" ng-hide="check" ng-animate="">
+            Hallo Welt
+        </div>
+
+        <div ng-show="check">
+            Ciao Welt
+        </div>
+
+    </div>
+
+
+<script>
+    var app = angular.module("myApp",["ngAnimate"]);
+  //  var app_ = angular.module("myApp",["myLib"]);
+
+/**************** eigener Service ************************/
+    app.service("helloWorld",function () {
+        this.print = function () {
+            console.log("executed");
+            console.log("Hello World");
+        }
+    });
+
+    app.controller("myController",function ($scope,helloWorld) {
+        helloWorld.print();
+    });
+/*********************************************************/
+
+
+    app.controller("myController",function ($scope, $location, $http) {
+       $scope.myArray=[
+            1,2,3,"Hello World",true
+        ];
+
+        $scope.myString = "Hello World";
+        $scope.names =[
+            "Person 1", "Person 2", "Person 3", "Person 4" , "Person 5" ,"Person 6","Person 7"
+        ];
+
+        $scope.myVar = "Hello World";
+
+        $scope.currentUrl = $location.absUrl();
+
+        $http.get("download.txt").then(function (response) {
+            $scope.downloadUrl = response.data;
+
+        })
+
+        $scope.alert = function(a){
+            window.alert(a);
+        }
+
+    });
+
+    /*eigener FILTER */
+    app.filter("myFilter",function () {
+        return function (toModify, start,length) {
+            console.log(start,length);
+            return toModify.substring(start,length);
+        };
+    });
+
+</script>
+</body>
+</html>
